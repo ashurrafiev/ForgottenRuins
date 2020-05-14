@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL20;
 
 import com.xrbpowered.gl.scene.CameraActor;
 import com.xrbpowered.ruins.render.prefab.InstanceShader;
-import com.xrbpowered.ruins.render.prefab.PrefabComponent;
 import com.xrbpowered.ruins.render.shader.WallShader;
 
 public class XRayObjectShader extends WallShader {
@@ -31,7 +30,7 @@ public class XRayObjectShader extends WallShader {
 
 	@Override
 	protected int bindAttribLocations() {
-		return PrefabComponent.bindShader(this, super.bindAttribLocations());
+		return InstanceShader.instInfo.bindAttribLocations(this.pId, super.bindAttribLocations());
 	}
 
 }

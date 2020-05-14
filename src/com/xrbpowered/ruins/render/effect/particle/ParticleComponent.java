@@ -42,7 +42,7 @@ public class ParticleComponent extends RenderComponent<Particle> {
 		if(points!=null)
 			releaseInstances();
 		if(maxCount>0) {
-			pointData = new float[maxCount*ParticleShader.vertexInfo.getSkip()];
+			pointData = ParticleShader.vertexInfo.createData(maxCount);
 			points = new StaticMesh(ParticleShader.vertexInfo, pointData, 1, maxCount, true);
 		}
 		else

@@ -12,11 +12,6 @@ import com.xrbpowered.ruins.render.RenderComponent;
 
 public abstract class InstanceComponent extends RenderComponent<InstanceInfo> {
 
-	private static int startAttrib = 3;
-	private static final String[] attribNames = {"ins_Position", "ins_RotationY" , "ins_Scale" , "ins_Light"};
-	private static final int[] attribSizes = {3, 1, 1, 1};
-	private static final int itemDataSize = 6; // sum of attribSizes
-
 	public final StaticMesh mesh; 
 	public final Texture texture;
 	public Texture glowTexture = null;
@@ -71,18 +66,18 @@ public abstract class InstanceComponent extends RenderComponent<InstanceInfo> {
 		if(instBuffer!=null)
 			releaseInstances();
 		if(count>0)
-			instBuffer = new InstanceBuffer(1, count, startAttrib, attribSizes);
+			instBuffer = new InstanceBuffer(count, InstanceShader.instInfo);
 		else
 			instBuffer = null;
 		return instBuffer!=null;
 	}
 	
 	protected float[] createInstanceData(int count) {
-		return new float[count * itemDataSize];
+		return InstanceShader.instInfo.createData(count);
 	}
 	
 	protected void setInstanceData(float[] instanceData, InstanceInfo info, int index) {
-		int offs = index * itemDataSize;
+		int offs = index * InstanceShader.instInfo.getSkip();
 		instanceData[offs+0] = info.x;
 		instanceData[offs+1] = info.y;
 		instanceData[offs+2] = info.z;
@@ -116,10 +111,5 @@ public abstract class InstanceComponent extends RenderComponent<InstanceInfo> {
 		if(black==null)
 			black = new Texture(Color.BLACK);
 		return black;
-	}
-	
-	public static int bindShader(Shader shader, int startAttrib) {
-		InstanceComponent.startAttrib = startAttrib;
-		return InstanceBuffer.bindAttribLocations(shader, startAttrib, attribNames);
 	}
 }

@@ -3,7 +3,9 @@ package com.xrbpowered.ruins.render;
 import org.joml.Vector3f;
 
 import com.xrbpowered.gl.res.mesh.AdvancedMeshBuilder;
+import com.xrbpowered.gl.res.mesh.MeshBuilder;
 import com.xrbpowered.gl.res.mesh.StaticMesh;
+import com.xrbpowered.gl.res.shader.VertexInfo;
 import com.xrbpowered.ruins.render.shader.WallShader;
 import com.xrbpowered.ruins.render.texture.TextureAtlas;
 import com.xrbpowered.ruins.world.Direction;
@@ -20,30 +22,38 @@ public class WallBuilder extends AdvancedMeshBuilder {
 	
 	public final int cx, cz;
 	
+	private VertexInfo.Attribute lightAttrib;
+	
 	private WallBuilder(World map, TextureAtlas atlas, int cx, int cz) {
 		super(WallShader.vertexInfo, null);
 		this.world = map;
 		this.atlas = atlas;
 		this.cx = cx;
 		this.cz = cz;
-		setCustomAttrib("in_Light", 0);
+		lightAttrib = info.get("in_Light");
+		//setCustomAttrib("in_Light", 0);
 	}
 
+	private MeshBuilder.Vertex setLight(MeshBuilder.Vertex v, float light) {
+		v.set(lightAttrib, 0, light);
+		return v;
+	}
+	
 	private Face newTriangle(Vector3f norm, float light) {
 		Face face = new Triangle(addVertex(), addVertex(), addVertex());
-		face.vertices[0].setNormal(norm).setCustom(light);
-		face.vertices[1].setNormal(norm).setCustom(light);
-		face.vertices[2].setNormal(norm).setCustom(light);
+		setLight(face.vertices[0].setNormal(norm), light);
+		setLight(face.vertices[1].setNormal(norm), light);
+		setLight(face.vertices[2].setNormal(norm), light);
 		add(face);
 		return face;
 	}
 	
 	private Face newQuad(Vector3f norm, float light) {
 		Face face = new Quad(addVertex(), addVertex(), addVertex(), addVertex());
-		face.vertices[0].setNormal(norm).setCustom(light);
-		face.vertices[1].setNormal(norm).setCustom(light);
-		face.vertices[2].setNormal(norm).setCustom(light);
-		face.vertices[3].setNormal(norm).setCustom(light);
+		setLight(face.vertices[0].setNormal(norm), light);
+		setLight(face.vertices[1].setNormal(norm), light);
+		setLight(face.vertices[2].setNormal(norm), light);
+		setLight(face.vertices[3].setNormal(norm), light);
 		add(face);
 		return face;
 	}
